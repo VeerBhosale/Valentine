@@ -1,176 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>For You ❤️</title>
+    <title>Important Question 💌</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <!-- Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    body {
-      height: 100vh;
-      overflow: hidden;
-      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e, #fecfef);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            text-align: center;
+        }
 
-    h1 {
-      font-size: 6vw;
-      margin-bottom: 20px;
-      z-index: 10;
-    }
+        h1 {
+            color: white;
+            font-size: 45px;
+            margin-bottom: 20px;
+            z-index: 2;
+        }
 
-    #mainImage {
-      width: 60vw;
-      max-width: 250px;
-      border-radius: 20px;
-      margin-bottom: 20px;
-      z-index: 10;
-    }
+        .main-photo {
+            width: 300px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255,255,255,0.8);
+            margin-bottom: 20px;
+            z-index: 2;
+        }
 
-    .buttons {
-      display: flex;
-      gap: 20px;
-      z-index: 10;
-    }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            z-index: 2;
+        }
 
-    button {
-      padding: 12px 25px;
-      font-size: 5vw;
-      max-font-size: 20px;
-      border: none;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: 0.3s ease;
-    }
+        button {
+            padding: 15px 30px;
+            font-size: 20px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-    #yesBtn {
-      background-color: #4CAF50;
-      color: white;
-    }
+        #yes {
+            background-color: #ff4d6d;
+            color: white;
+        }
 
-    #noBtn {
-      background-color: #f44336;
-      color: white;
-      position: absolute;
-    }
+        #no {
+            background-color: #444;
+            color: white;
+        }
 
-    #result {
-      margin-top: 20px;
-      font-size: 7vw;
-      font-weight: bold;
-      display: none;
-      z-index: 10;
-    }
+        .floating-image {
+            position: fixed;
+            width: 120px;
+            border-radius: 15px;
+            opacity: 0.7;
+            z-index: 0;
+        }
 
-    #extraImage {
-      margin-top: 15px;
-      width: 65vw;
-      max-width: 300px;
-      display: none;
-      border-radius: 20px;
-      z-index: 10;
-    }
+        .final-image {
+            width: 350px;
+            border-radius: 20px;
+            margin-top: 20px;
+            box-shadow: 0 0 40px rgba(255,255,255,0.9);
+        }
 
-    .floating {
-      position: absolute;
-      width: 80px;
-      opacity: 0.7;
-      pointer-events: none;
-    }
-  </style>
+    </style>
 </head>
 
 <body>
 
-  <h1>Will you be mine? ❤️</h1>
+    <h1>Will you be my Valentine? 💖</h1>
 
-  <img id="mainImage" src="main.jpg" />
+    <!-- Center Image -->
+    <img src="M10.jpeg" class="main-photo">
 
-  <div class="buttons">
-    <button id="yesBtn">Yes</button>
-    <button id="noBtn">No</button>
-  </div>
+    <!-- Buttons -->
+    <div class="button-container">
+        <button id="yes" onclick="yesClicked()">Yes 💘</button>
+        <button id="no" onclick="growYes()">No 🙈</button>
+    </div>
 
-  <div id="result">You are mine ❤️</div>
-  <img id="extraImage" src="extra.jpg" />
+    <script>
 
-  <script>
-    const noBtn = document.getElementById("noBtn");
-    const yesBtn = document.getElementById("yesBtn");
-    const result = document.getElementById("result");
-    const extraImage = document.getElementById("extraImage");
+        // Background bouncing images (M1–M9)
+        const imageList = [
+            "M1.jpeg",
+            "M2.jpeg",
+            "M3.jpeg",
+            "M4.jpeg",
+            "M5.jpeg",
+            "M6.jpeg",
+            "M7.jpeg",
+            "M8.jpeg",
+            "M9.jpeg"
+        ];
 
-    let yesSize = 1;
+        const images = [];
 
-    // Move No randomly
-    function moveNo() {
-      const maxX = window.innerWidth - noBtn.offsetWidth;
-      const maxY = window.innerHeight - noBtn.offsetHeight;
+        function createBouncingImage(src) {
+            const img = document.createElement("img");
+            img.src = src;
+            img.className = "floating-image";
 
-      const randomX = Math.random() * maxX;
-      const randomY = Math.random() * maxY;
+            img.style.left = Math.random() * (window.innerWidth - 120) + "px";
+            img.style.top = Math.random() * (window.innerHeight - 120) + "px";
 
-      noBtn.style.left = randomX + "px";
-      noBtn.style.top = randomY + "px";
-    }
+            document.body.appendChild(img);
 
-    noBtn.addEventListener("touchstart", moveNo);
-    noBtn.addEventListener("mouseover", moveNo);
+            images.push({
+                element: img,
+                x: parseFloat(img.style.left),
+                y: parseFloat(img.style.top),
+                dx: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1),
+                dy: (Math.random() * 2 + 1) * (Math.random() < 0.5 ? 1 : -1)
+            });
+        }
 
-    // Yes grows when clicked
-    yesBtn.addEventListener("click", () => {
-      yesSize += 0.3;
-      yesBtn.style.transform = `scale(${yesSize})`;
+        imageList.forEach(src => createBouncingImage(src));
 
-      if (yesSize > 2) {
-        result.style.display = "block";
-        extraImage.style.display = "block";
-        yesBtn.style.display = "none";
-        noBtn.style.display = "none";
-      }
-    });
+        function animate() {
+            images.forEach(obj => {
+                obj.x += obj.dx;
+                obj.y += obj.dy;
 
-    // Floating DVD-style images
-    const imageCount = 10;
+                if (obj.x <= 0 || obj.x >= window.innerWidth - 120) {
+                    obj.dx *= -1;
+                }
 
-    for (let i = 0; i < imageCount; i++) {
-      const img = document.createElement("img");
-      img.src = "float.jpg";
-      img.classList.add("floating");
+                if (obj.y <= 0 || obj.y >= window.innerHeight - 120) {
+                    obj.dy *= -1;
+                }
 
-      img.style.left = Math.random() * window.innerWidth + "px";
-      img.style.top = Math.random() * window.innerHeight + "px";
+                obj.element.style.left = obj.x + "px";
+                obj.element.style.top = obj.y + "px";
+            });
 
-      document.body.appendChild(img);
+            requestAnimationFrame(animate);
+        }
 
-      let dx = (Math.random() * 2) + 1;
-      let dy = (Math.random() * 2) + 1;
+        animate();
 
-      function animate() {
-        const rect = img.getBoundingClientRect();
+        // YES grows when NO is clicked
+        let yesSize = 20;
 
-        if (rect.left <= 0 || rect.right >= window.innerWidth) dx *= -1;
-        if (rect.top <= 0 || rect.bottom >= window.innerHeight) dy *= -1;
+        function growYes() {
+            const yesBtn = document.getElementById("yes");
+            yesSize += 10;
+            yesBtn.style.fontSize = yesSize + "px";
+            yesBtn.style.padding = (yesSize / 2) + "px";
+        }
 
-        img.style.left = rect.left + dx + "px";
-        img.style.top = rect.top + dy + "px";
+        // Final reveal
+        function yesClicked() {
+            document.body.innerHTML = `
+                <h1 style="color:white; font-size:50px;">You will always be a part of me <3</h1>
+                <img src="final.jpeg" class="final-image">
+            `;
 
-        requestAnimationFrame(animate);
-      }
+            confetti({
+                particleCount: 300,
+                spread: 160,
+                origin: { y: 0.6 }
+            });
+        }
 
-      animate();
-    }
-  </script>
+    </script>
 
 </body>
 </html>
